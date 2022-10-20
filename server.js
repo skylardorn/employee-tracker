@@ -17,16 +17,16 @@ const db = mysql.createConnection(
     user: 'root',
     // TODO: Add MySQL password here
     password: '',
-    database: 'movies_db'
+    database: 'department_db'
   },
-  console.log(`Connected to the movies_db database.`)
+  console.log(`Connected to the department_db database.`)
 );
 
-// Create a movie
-app.post('/api/new-movie', ({ body }, res) => {
-  const sql = `INSERT INTO movies (movie_name)
+// Create a department
+app.post('/api/new-department', ({ body }, res) => {
+  const sql = `INSERT INTO department (department)_name)
     VALUES (?)`;
-  const params = [body.movie_name];
+  const params = [body.department_name];
   
   db.query(sql, params, (err, result) => {
     if (err) {
@@ -40,9 +40,9 @@ app.post('/api/new-movie', ({ body }, res) => {
   });
 });
 
-// Read all movies
-app.get('/api/movies', (req, res) => {
-  const sql = `SELECT id, movie_name AS title FROM movies`;
+// Read all department
+app.get('/api/department', (req, res) => {
+  const sql = `SELECT id, department_name AS title FROM department`;
   
   db.query(sql, (err, rows) => {
     if (err) {
@@ -56,9 +56,9 @@ app.get('/api/movies', (req, res) => {
   });
 });
 
-// Delete a movie
-app.delete('/api/movie/:id', (req, res) => {
-  const sql = `DELETE FROM movies WHERE id = ?`;
+// Delete a department
+app.delete('/api/department/:id', (req, res) => {
+  const sql = `DELETE FROM department WHERE id = ?`;
   const params = [req.params.id];
   
   db.query(sql, params, (err, result) => {
@@ -66,7 +66,7 @@ app.delete('/api/movie/:id', (req, res) => {
       res.statusMessage(400).json({ error: res.message });
     } else if (!result.affectedRows) {
       res.json({
-      message: 'Movie not found'
+      message: 'department not found'
       });
     } else {
       res.json({
@@ -78,9 +78,9 @@ app.delete('/api/movie/:id', (req, res) => {
   });
 });
 
-// Read list of all reviews and associated movie name using LEFT JOIN
-app.get('/api/movie-reviews', (req, res) => {
-  const sql = `SELECT movies.movie_name AS movie, reviews.review FROM reviews LEFT JOIN movies ON reviews.movie_id = movies.id ORDER BY movies.movie_name;`;
+// Read list of all role and associated department name using LEFT JOIN
+app.get('/api/department-role', (req, res) => {
+  const sql = `SELECT department.department_name AS department, role.role FROM role LEFT JOIN departments ON role.department_id = department.id ORDER BY department.department_name;`;
   db.query(sql, (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
@@ -93,17 +93,17 @@ app.get('/api/movie-reviews', (req, res) => {
   });
 });
 
-// BONUS: Update review name
-app.put('/api/review/:id', (req, res) => {
-  const sql = `UPDATE reviews SET review = ? WHERE id = ?`;
-  const params = [req.body.review, req.params.id];
+// BONUS: Update role name
+app.put('/api/role/:id', (req, res) => {
+  const sql = `UPDATE role SET role = ? WHERE id = ?`;
+  const params = [req.body.role, req.params.id];
 
   db.query(sql, params, (err, result) => {
     if (err) {
       res.status(400).json({ error: err.message });
     } else if (!result.affectedRows) {
       res.json({
-        message: 'Movie not found'
+        message: 'department not found'
       });
     } else {
       res.json({
